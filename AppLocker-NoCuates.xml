@@ -1,0 +1,32 @@
+﻿<AppLockerPolicy Version="1">
+  <RuleCollection Type="Exe" EnforcementMode="Enabled">
+    <FilePathRule Id="c83d9c3d-b420-5de1-a786-e3288dbc8b63"
+                  Name="Permitir Administradores"
+                  UserOrGroupSid="S-1-5-32-544" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="921cc481-6e17-4653-8f75-050b80acca20"
+                  Name="Permitir System32 a NoCuates"
+                  UserOrGroupSid="S-1-5-21-2203628669-868486423-2365751758-1106" Action="Allow">
+      <Conditions><FilePathCondition Path="%WINDIR%\System32\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="a61c8b2c-a319-4cd0-9690-d2177cad7b51"
+                  Name="Permitir Program Files a NoCuates"
+                  UserOrGroupSid="S-1-5-21-2203628669-868486423-2365751758-1106" Action="Allow">
+      <Conditions><FilePathCondition Path="%PROGRAMFILES%\*" /></Conditions>
+    </FilePathRule>
+    <FileHashRule Id="c7dd97b6-4e3f-5f79-b31b-5b59d52f95f8"
+                  Name="BLOQUEAR notepad a NoCuates"
+                  UserOrGroupSid="S-1-5-21-2203628669-868486423-2365751758-1106" Action="Deny">
+      <Conditions>
+        <FileHashCondition>
+          <FileHash Type="SHA256" Data="0x7D453801B059E4DAB59B1B159CCD713E1D3593FAA537C6AC5BBC2CE6C1E78A4D" SourceFileName="notepad.exe" SourceFileLength="225280" />
+        </FileHashCondition>
+      </Conditions>
+    </FileHashRule>
+  </RuleCollection>
+  <RuleCollection Type="Script" EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Msi" EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Dll" EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Appx" EnforcementMode="NotConfigured" />
+</AppLockerPolicy>

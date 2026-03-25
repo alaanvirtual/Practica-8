@@ -1,0 +1,64 @@
+﻿<AppLockerPolicy Version="1">
+  <RuleCollection Type="Exe" EnforcementMode="Enabled">
+
+    <!-- Regla base: Administradores pueden ejecutar todo -->
+    <FilePublisherRule Id="a9e18c21-ff8f-43cf-b9fc-db40eed693ba"
+                       Name="Permitir ejecutables Microsoft - Administradores"
+                       Description="Regla base para administradores"
+                       UserOrGroupSid="S-1-5-32-544"
+                       Action="Allow">
+      <Conditions>
+        <FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US"
+                                ProductName="*"
+                                BinaryName="*">
+          <BinaryVersionRange LowSection="*" HighSection="*" />
+        </FilePublisherCondition>
+      </Conditions>
+    </FilePublisherRule>
+
+    <!-- BLOQUEO por Hash: notepad.exe bloqueado aunque se renombre -->
+    <!-- S-1-1-0 = Everyone (aplica a todos los usuarios, incl. NoCuates) -->
+    <!-- Deny tiene precedencia sobre Allow, por eso funciona correctamente -->
+    <FileHashRule Id="c7dd97b6-4e3f-5f79-b31b-5b59d52f95f8"
+                  Name="BLOQUEAR Bloc de Notas - NoCuates (por Hash)"
+                  Description="NoCuates NO pueden usar notepad.exe - bloqueado por hash aunque se renombre"
+                  UserOrGroupSid="S-1-1-0"
+                  Action="Deny">
+      <Conditions>
+        <FileHashCondition>
+          <FileHash Type="SHA256"
+                    Data="0x7D453801B059E4DAB59B1B159CCD713E1D3593FAA537C6AC5BBC2CE6C1E78A4D"
+                    SourceFileName="notepad.exe"
+                    SourceFileLength="225280" />
+        </FileHashCondition>
+      </Conditions>
+    </FileHashRule>
+
+    <!-- Permitir System32 a usuarios autenticados (excepto lo bloqueado) -->
+    <!-- S-1-1-0 en lugar del SID hardcodeado del dominio anterior -->
+    <FilePathRule Id="921cc481-6e17-4653-8f75-050b80acca20"
+                  Name="Permitir Windows System a NoCuates"
+                  Description="Ejecutables del sistema permitidos excepto los bloqueados"
+                  UserOrGroupSid="S-1-1-0"
+                  Action="Allow">
+      <Conditions>
+        <FilePathCondition Path="%WINDIR%\*" />
+      </Conditions>
+    </FilePathRule>
+
+    <FilePathRule Id="a61c8b2c-a319-4cd0-9690-d2177cad7b51"
+                  Name="Permitir Program Files a NoCuates"
+                  Description="Ejecutables de Program Files permitidos"
+                  UserOrGroupSid="S-1-1-0"
+                  Action="Allow">
+      <Conditions>
+        <FilePathCondition Path="%PROGRAMFILES%\*" />
+      </Conditions>
+    </FilePathRule>
+
+  </RuleCollection>
+  <RuleCollection Type="Script" EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Msi"    EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Dll"    EnforcementMode="NotConfigured" />
+  <RuleCollection Type="Appx"   EnforcementMode="NotConfigured" />
+</AppLockerPolicy>
